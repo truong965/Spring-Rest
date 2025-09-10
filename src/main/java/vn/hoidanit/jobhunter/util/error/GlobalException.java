@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import vn.hoidanit.jobhunter.domain.response.RestResponse;
 
@@ -21,13 +22,26 @@ public class GlobalException {
     // BadCredentials will be stop at filter before go to controller at here
     //
     @ExceptionHandler(value = {
+            InvalidException.class,
             UsernameNotFoundException.class,
             BadCredentialsException.class })
-    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(Exception ex) {
+
+    public ResponseEntity<RestResponse<Object>> handleInvalidException(Exception ex) {
         RestResponse<Object> rs = new RestResponse<Object>();
         rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
         rs.setError(ex.getMessage());
         rs.setMessage("exception occurs ");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
+    }
+
+    @ExceptionHandler(value = {
+            NoResourceFoundException.class })
+
+    public ResponseEntity<RestResponse<Object>> handleNotFoundException(Exception ex) {
+        RestResponse<Object> rs = new RestResponse<Object>();
+        rs.setStatusCode(HttpStatus.NOT_FOUND.value());
+        rs.setError(ex.getMessage());
+        rs.setMessage("404 NOT FOUND !!! url may not exists");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
     }
 

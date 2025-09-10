@@ -1,38 +1,55 @@
 package vn.hoidanit.jobhunter.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.Meta;
+import vn.hoidanit.jobhunter.domain.dto.ResponseCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResponseGetUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResponseUpdateUserDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.mapper.UserMapper;
 import vn.hoidanit.jobhunter.repository.UserRepository;
+import vn.hoidanit.jobhunter.util.error.InvalidException;
 
 @Service
 public class UserService {
       private final UserRepository userRepository;
+      private final UserMapper userMapper;
 
-      public UserService(UserRepository userRepository) {
+      public UserService(UserRepository userRepository, UserMapper userMapper) {
             this.userRepository = userRepository;
+            this.userMapper = userMapper;
       }
 
       @Transactional
-      public User saveUser(User user) {
-
-            return userRepository.save(user);
+      public ResponseCreateUserDTO saveUser(User user) throws InvalidException {
+            User exUser = this.findByEmail(user.getEmail());
+            if (exUser != null) {
+                  throw new InvalidException("email is exits");
+            }
+            User newUser = userRepository.save(user);
+            return userMapper.toResponseCreateUserDTO(newUser);
       }
 
       @Transactional
-      public void deleteUser(long id) {
+      public void deleteUser(long id) throws InvalidException {
+            fetchUserById(id);
             userRepository.deleteById(id);
       }
 
-      public User fetchUserById(long id) {
-            return userRepository.findById(id).orElse(null);
+      public ResponseGetUserDTO fetchUserById(long id) throws InvalidException {
+            User exUser = userRepository.findById(id).orElse(null);
+            if (exUser == null) {
+                  throw new InvalidException("id= " + id + " not exists");
+            }
+            return userMapper.toResponseGetUserDTO(exUser);
       }
 
       public ResultPaginationDTO fetchAllUsers(Specification<User> specification, Pageable pageable) {
@@ -46,19 +63,29 @@ public class UserService {
             meta.setTotalPages(userPage.getTotalElements());
 
             resultPaginationDTO.setMeta(meta);
-            resultPaginationDTO.setResult(userPage.getContent());
+            List<User> listUser = userPage.getContent();
+            List<ResponseGetUserDTO> listDto = listUser.stream()
+                        .map(userMapper::toResponseGetUserDTO)
+                        .toList(); // Hoặc .collect(Collectors.toList());
+            resultPaginationDTO.setResult(listDto);
             return resultPaginationDTO;
       }
 
       @Transactional
-      public User updateUser(User user) {
-            User existingUser = this.fetchUserById(user.getId());
+      public ResponseUpdateUserDTO updateUser(User user) throws InvalidException {
+            User existingUser = this.userRepository.findById(user.getId()) != null
+                        ? this.userRepository.findById(user.getId()).get()
+                        : null;
             if (existingUser == null) {
-                  return null;
+                  throw new InvalidException("id= " + user.getId() + " not exists");
             }
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());
-            return userRepository.save(existingUser);
+            existingUser.setAge(user.getAge());
+            existingUser.setAddress(user.getAddress());
+
+            userRepository.save(existingUser);
+            return userMapper.toResponseUpdateUserDTO(existingUser);
       }
 
       public User findByEmail(String email) {

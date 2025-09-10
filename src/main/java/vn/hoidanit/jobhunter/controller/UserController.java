@@ -4,16 +4,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.dto.ResponseCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResponseGetUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResponseUpdateUserDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
-import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+import vn.hoidanit.jobhunter.util.error.InvalidException;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
@@ -40,21 +39,24 @@ public class UserController {
       }
 
       @PostMapping("/users")
-      public ResponseEntity<User> createNewUser(@RequestBody User postmanUser) {
+      @ApiMessage("create new user")
+      public ResponseEntity<ResponseCreateUserDTO> createNewUser(@Valid @RequestBody User postmanUser)
+                  throws InvalidException {
             postmanUser.setPassword(passwordEncoder.encode(postmanUser.getPassword()));
-            User newUser = userService.saveUser(postmanUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+            ResponseCreateUserDTO userResponseDTO = userService.saveUser(postmanUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
       }
 
       @DeleteMapping("/users/{id}")
-      public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
+      @ApiMessage("delete a user")
+      public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws InvalidException {
             userService.deleteUser(id);
             return ResponseEntity.noContent().build();
       }
 
       @GetMapping("/users/{id}")
-      public ResponseEntity<User> fetchUserById(@PathVariable("id") String id) {
-            User user = userService.fetchUserById(Long.parseLong(id));
+      public ResponseEntity<ResponseGetUserDTO> fetchUserById(@PathVariable("id") String id) throws InvalidException {
+            ResponseGetUserDTO user = userService.fetchUserById(Long.parseLong(id));
             return ResponseEntity.ok(user != null ? user : null);
       }
 
@@ -63,12 +65,13 @@ public class UserController {
       public ResponseEntity<ResultPaginationDTO> fetchAllUsers(
                   @Filter Specification<User> specification,
                   // default name (spring auto get value) page=1&size=1&sort=name,desc
-                  Pageable pageable) {
+                  Pageable pageable) throws InvalidException {
             return ResponseEntity.ok(userService.fetchAllUsers(specification, pageable));
       }
 
       @PutMapping("/users")
-      public ResponseEntity<User> updateUser(@RequestBody User user) {
+      @ApiMessage("update user")
+      public ResponseEntity<ResponseUpdateUserDTO> updateUser(@Valid @RequestBody User user) throws InvalidException {
             return ResponseEntity.ok(this.userService.updateUser(user));
       }
 }
