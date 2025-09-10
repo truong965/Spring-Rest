@@ -2,20 +2,23 @@ package vn.hoidanit.jobhunter.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-
-import com.nimbusds.jose.util.Base64;
 
 @Service
 public class SecurityUtil {
@@ -46,5 +49,45 @@ public class SecurityUtil {
                   .build();
             JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,claims)).getTokenValue();
+      }
+      public static Optional<String> getCurrentUserLogin(){
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
+      }
+      private static String extractPrincipal (Authentication authentication){
+            if(authentication ==null){
+                  return null;
+            }else if(authentication.getPrincipal() instanceof UserDetails springSecurityUser){
+                  return springSecurityUser.getUsername();
+            }else if(authentication.getPrincipal() instanceof Jwt jwt){
+                  return jwt.getSubject();
+            }else if(authentication.getPrincipal() instanceof String s){
+                  return s;
+            }
+            return null;
+      }
+
+      public static Optional<String> getCurrentUserJWT(){
+            SecurityContext securityContext= SecurityContextHolder.getContext();
+            return Optional.ofNullable(securityContext.getAuthentication())
+            .filter(au-> au.getCredentials() instanceof String)
+            .map(au-> (String)au.getCredentials());
+      }
+      // public static boolean isAuthenicated(){
+      //       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      //       return authentication!=null && getAuthorities(authentication).noneMatch(Au)
+      // }
+      public static boolean hasCurrentUserAnyOfAuthorities(String... authorities){
+            Authentication authentication =SecurityContextHolder.getContext().getAuthentication();
+            return(authentication!=null && getAuthorities(authentication).anyMatch(au->Arrays.asList(authorities).contains(au)));
+      }
+      public static boolean hasCurrentUserNoneOfAuthorities(String... authorities){
+            return !hasCurrentUserAnyOfAuthorities(authorities);
+      }
+      public static boolean hasCurrentUserThisAuthorities(String authority){
+            return hasCurrentUserAnyOfAuthorities(authority);
+      }
+      private static Stream<String> getAuthorities(Authentication authentication){
+            return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority);
       }
 }

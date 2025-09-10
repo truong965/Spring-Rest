@@ -31,6 +31,7 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
     }
 
+    // handle valid exception
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ma) {
