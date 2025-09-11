@@ -6,10 +6,10 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.ResponseCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResponseGetUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResponseUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.InvalidException;

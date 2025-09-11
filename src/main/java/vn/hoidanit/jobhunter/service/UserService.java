@@ -9,11 +9,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.Meta;
-import vn.hoidanit.jobhunter.domain.dto.ResponseCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResponseGetUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResponseUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.mapper.UserMapper;
 import vn.hoidanit.jobhunter.repository.UserRepository;
 import vn.hoidanit.jobhunter.util.error.InvalidException;
@@ -56,7 +55,7 @@ public class UserService {
             Page<User> userPage = userRepository.findAll(pageable);
             ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
 
-            Meta meta = new Meta();
+            ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
             meta.setPage(pageable.getPageNumber() + 1);
             meta.setPageSize(pageable.getPageSize());
             meta.setPages(userPage.getTotalPages());

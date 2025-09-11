@@ -3,9 +3,9 @@ package vn.hoidanit.jobhunter.mapper;
 import org.mapstruct.Mapper;
 
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.ResponseCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResponseGetUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResponseUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseUpdateUserDTO;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
