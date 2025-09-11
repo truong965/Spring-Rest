@@ -49,13 +49,15 @@ public class JwtConfiguration {
       }
 
       // khi gửi request lên server sẽ thêm cả role của user và hàm này sẽ convert
-      // data chứa token cho
-      // security để tái sử dụng và security sẽ check author user(sẽ được code sau)
+      // data chứa token (nhưng thông tin cần thiết là "permission" hay
+      // (AuthoritiesClaimName)) cho
+      // authentication để tái sử dụng và security sẽ check author user(sẽ được code
+      // sau)
       @Bean
       public JwtAuthenticationConverter jwtAuthenticationConverter() {
             JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
             grantedAuthoritiesConverter.setAuthorityPrefix("");
-            grantedAuthoritiesConverter.setAuthoritiesClaimName(SecurityUtil.AUTHORITIES_KEY);
+            grantedAuthoritiesConverter.setAuthoritiesClaimName("permission");
             JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
             jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
             return jwtAuthenticationConverter;

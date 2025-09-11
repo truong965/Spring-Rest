@@ -19,5 +19,5 @@ public class ResponseCreateUserDTO {
       private int age;
       private GenderEnum gender;
       private String address;
-      private Instant createAt;
+      private Instant createdAt;
 }

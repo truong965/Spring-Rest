@@ -1,10 +1,7 @@
 package vn.hoidanit.jobhunter.domain.dto;
 
 import java.time.Instant;
-
-import jakarta.persistence.PreUpdate;
 import vn.hoidanit.jobhunter.domain.constant.GenderEnum;
-import vn.hoidanit.jobhunter.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +17,5 @@ public class ResponseUpdateUserDTO {
       private int age;
       private GenderEnum gender;
       private String address;
-      private Instant updateAt;
+      private Instant updatedAt;
 }

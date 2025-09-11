@@ -91,4 +91,17 @@ public class UserService {
       public User findByEmail(String email) {
             return this.userRepository.findByEmail(email);
       }
+
+      @Transactional
+      public void updateUserToken(String token, String email) {
+            User curUser = this.findByEmail(email);
+            if (curUser != null) {
+                  curUser.setRefreshToken(token);
+                  this.userRepository.save(curUser);
+            }
+      }
+
+      public User getUserByEmailAndRefreshToken(String email, String token) {
+            return userRepository.findByEmailAndRefreshToken(email, token);
+      }
 }

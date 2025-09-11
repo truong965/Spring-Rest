@@ -9,21 +9,16 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import vn.hoidanit.jobhunter.domain.Company;
-import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.Meta;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.CompanyRepository;
-import vn.hoidanit.jobhunter.repository.UserRepository;
 
 @Service
 public class CompanyService {
-
-      private final UserRepository userRepository;
       private final CompanyRepository companyRepository;
 
-      public CompanyService(CompanyRepository companyRepository, UserRepository userRepository) {
+      public CompanyService(CompanyRepository companyRepository) {
             this.companyRepository = companyRepository;
-            this.userRepository = userRepository;
       }
 
       @Transactional

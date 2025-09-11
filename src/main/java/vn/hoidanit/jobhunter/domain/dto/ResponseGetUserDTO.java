@@ -1,10 +1,6 @@
 package vn.hoidanit.jobhunter.domain.dto;
 
 import java.time.Instant;
-
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +18,8 @@ public class ResponseGetUserDTO {
       private int age;
       private GenderEnum gender;
       private String address;
-      private Instant createAt;
-      private Instant updateAt;
+      private Instant createdAt;
+      private Instant updatedAt;
       private String createdBy;
       private String updatedBy;
 

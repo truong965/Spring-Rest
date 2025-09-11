@@ -1,13 +1,8 @@
 package vn.hoidanit.jobhunter.controller;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.Company;
-import vn.hoidanit.jobhunter.domain.dto.Meta;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.CompanyService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
@@ -25,7 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.turkraft.springfilter.boot.Filter;
 
@@ -52,7 +45,7 @@ public class CompanyController {
       }
 
       @DeleteMapping("/companies/{id}")
-      public ResponseEntity<Void> handleDelteCompany(@PathVariable Long id) {
+      public ResponseEntity<Void> handleDelteCompany(@PathVariable("id") Long id) {
             // TODO: process PUT request
             this.companyService.deleteCompany(id);
             return ResponseEntity.ok(null);
@@ -66,7 +59,7 @@ public class CompanyController {
       }
 
       @GetMapping("/companies/{id}")
-      public ResponseEntity<Company> handleFetchCompanyById(@PathVariable Long id) {
+      public ResponseEntity<Company> handleFetchCompanyById(@PathVariable("id") Long id) {
             return ResponseEntity.ok(companyService.fetchCompanyById(id));
       }
 

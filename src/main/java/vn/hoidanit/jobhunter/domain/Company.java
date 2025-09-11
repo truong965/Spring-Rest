@@ -2,8 +2,6 @@ package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,14 +35,14 @@ public class Company {
       private String address;
       private String logo;
       // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
-      private Instant createAt;
-      private Instant updateAt;
+      private Instant createdAt;
+      private Instant updatedAt;
       private String createdBy;
       private String updatedBy;
 
       @PrePersist
       public void handlePrePersist() {
-            this.createAt = Instant.now();
+            this.createdAt = Instant.now();
             this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : "";
@@ -52,7 +50,7 @@ public class Company {
 
       @PreUpdate
       public void handlePreUpdate() {
-            this.updateAt = Instant.now();
+            this.updatedAt = Instant.now();
             this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : "";

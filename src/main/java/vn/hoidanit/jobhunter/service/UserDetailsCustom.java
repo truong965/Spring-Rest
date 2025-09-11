@@ -31,6 +31,7 @@ public class UserDetailsCustom implements UserDetailsService {
             if (user == null) {
                   throw new UsernameNotFoundException("invalid username or password");
             }
+
             return new User(
                         user.getEmail(),
                         user.getPassword(),

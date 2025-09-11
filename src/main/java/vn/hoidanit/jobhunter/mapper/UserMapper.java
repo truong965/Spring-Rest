@@ -1,7 +1,6 @@
 package vn.hoidanit.jobhunter.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.ResponseCreateUserDTO;

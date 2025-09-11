@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,16 +42,17 @@ public class User {
       private GenderEnum gender;
 
       private String address;
-      private String refeshToken;
+      @Column(columnDefinition = "MEDIUMTEXT")
+      private String refreshToken;
 
-      private Instant createAt;
-      private Instant updateAt;
+      private Instant createdAt;
+      private Instant updatedAt;
       private String createdBy;
       private String updatedBy;
 
       @PrePersist
       public void handlePrePersist() {
-            this.createAt = Instant.now();
+            this.createdAt = Instant.now();
             this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : "";
@@ -58,7 +60,7 @@ public class User {
 
       @PreUpdate
       public void handlePreUpdate() {
-            this.updateAt = Instant.now();
+            this.updatedAt = Instant.now();
             this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : "";
