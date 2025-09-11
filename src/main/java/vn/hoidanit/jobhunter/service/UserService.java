@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResponseCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
@@ -21,10 +22,12 @@ import vn.hoidanit.jobhunter.util.error.InvalidException;
 public class UserService {
       private final UserRepository userRepository;
       private final UserMapper userMapper;
+      private final CompanyService companyService;
 
-      public UserService(UserRepository userRepository, UserMapper userMapper) {
+      public UserService(UserRepository userRepository, UserMapper userMapper, CompanyService companyService) {
             this.userRepository = userRepository;
             this.userMapper = userMapper;
+            this.companyService = companyService;
       }
 
       @Transactional
@@ -32,6 +35,10 @@ public class UserService {
             User exUser = this.findByEmail(user.getEmail());
             if (exUser != null) {
                   throw new InvalidException("email is exits");
+            }
+            if (user.getCompany() != null) {
+                  Company exCompany = this.companyService.fetchCompanyById(user.getCompany().getId());
+                  user.setCompany(exCompany);
             }
             User newUser = userRepository.save(user);
             return userMapper.toResponseCreateUserDTO(newUser);
@@ -77,6 +84,10 @@ public class UserService {
                         : null;
             if (existingUser == null) {
                   throw new InvalidException("id= " + user.getId() + " not exists");
+            }
+            if (user.getCompany() != null) {
+                  Company exCompany = this.companyService.fetchCompanyById(user.getCompany().getId());
+                  existingUser.setCompany(exCompany);
             }
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());

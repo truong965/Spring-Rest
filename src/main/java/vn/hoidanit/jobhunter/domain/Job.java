@@ -2,59 +2,70 @@ package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.hibernate.annotations.Cascade;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.hoidanit.jobhunter.domain.constant.LevelEnum;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 @Entity
-@Table(name = "companies")
-public class Company {
+@Table(name = "jobs")
+public class Job {
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
-      @Column(name = "company_id")
+      @Column(name = "job_id")
       private long id;
-      @NotBlank(message = "khong duoc de trong")
       private String name;
+      private String location;
+      private Double salary;
+      private Integer quantity;
+
+      @Enumerated(EnumType.STRING)
+      private LevelEnum level;
+
       @Column(columnDefinition = "MEDIUMTEXT")
       private String description;
-      private String address;
-      private String logo;
+
+      private Instant startDate;
+      private Instant endDate;
+      private boolean active;
 
       private Instant createdAt;
       private Instant updatedAt;
       private String createdBy;
       private String updatedBy;
 
-      @OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-      @JsonIgnore
-      private List<User> users;
+      @ManyToOne
+      @JoinColumn(name = "company_id")
+      private Company company;
 
-      @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-      @JsonIgnore
-      private List<Job> jobs;
+      @ManyToMany(fetch = FetchType.LAZY)
+      @JsonIgnoreProperties(value = { "jobs" })
+      @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+      private List<Skill> skills;
 
       @PrePersist
       public void handlePrePersist() {
@@ -71,5 +82,4 @@ public class Company {
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : "";
       }
-
 }

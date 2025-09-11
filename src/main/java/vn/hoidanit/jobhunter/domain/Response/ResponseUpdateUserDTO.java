@@ -18,4 +18,5 @@ public class ResponseUpdateUserDTO {
       private GenderEnum gender;
       private String address;
       private Instant updatedAt;
+      private ResponseCompanyUser company;
 }

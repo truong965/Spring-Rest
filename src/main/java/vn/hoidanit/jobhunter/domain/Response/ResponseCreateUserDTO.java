@@ -20,4 +20,5 @@ public class ResponseCreateUserDTO {
       private GenderEnum gender;
       private String address;
       private Instant createdAt;
+      private ResponseCompanyUser company;
 }
