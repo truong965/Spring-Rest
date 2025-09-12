@@ -34,6 +34,10 @@ dependencies {
 	implementation("com.turkraft.springfilter:jpa:3.1.7")
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+	// https://mvnrepository.com/artifact/org.apache.tika/tika-core
+	implementation("org.apache.tika:tika-core:3.2.2")
+// https://mvnrepository.com/artifact/commons-io/commons-io
+	implementation("commons-io:commons-io:2.20.0")
 }
 
 tasks.withType<Test> {

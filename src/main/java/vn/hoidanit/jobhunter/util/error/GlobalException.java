@@ -9,9 +9,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import vn.hoidanit.jobhunter.domain.response.RestResponse;
@@ -60,4 +62,25 @@ public class GlobalException {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
+
+    @ExceptionHandler(value = {
+            StorageException.class })
+
+    public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
+        RestResponse<Object> rs = new RestResponse<Object>();
+        rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        rs.setError(ex.getMessage());
+        rs.setMessage("exception upload file occurs ");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<RestResponse<Object>> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.PAYLOAD_TOO_LARGE.value());
+        res.setError(ex.getMessage());
+        res.setMessage("File size exceeds the configured limit.");
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(res);
+    }
+
 }

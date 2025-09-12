@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.util;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -27,7 +28,7 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
                   Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
             HttpServletResponse res = ((ServletServerHttpResponse) response).getServletResponse();
             int status = res.getStatus();
-            if (body instanceof String) {
+            if (body instanceof String || body instanceof Resource) {
                   return body;
             }
             // case error
