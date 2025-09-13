@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Resume;
@@ -9,12 +10,12 @@ import vn.hoidanit.jobhunter.domain.response.ResponseCreateResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseGetResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseResumeJob;
 import vn.hoidanit.jobhunter.domain.response.ResponseResumeUser;
-import vn.hoidanit.jobhunter.domain.response.ResponseUpdatedResumeDTO;
 
 @Mapper(componentModel = "spring")
 public interface ResumeMapper {
       ResponseCreateResumeDTO toResponseCreateResumeDTO(Resume resume);
 
+      @Mapping(target = "companyName", ignore = true)
       ResponseGetResumeDTO toResponseGetResumeDTO(Resume resume);
 
       ResponseGetResumeDTO toResponseGetResumeDTO(Resume resume, String companyName);

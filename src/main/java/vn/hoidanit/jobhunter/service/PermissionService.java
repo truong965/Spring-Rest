@@ -6,24 +6,21 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
 import vn.hoidanit.jobhunter.domain.Permission;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.PermissionRepository;
-import vn.hoidanit.jobhunter.repository.RoleRepository;
+import vn.hoidanit.jobhunter.util.error.InvalidException;
 
 @Service
 public class PermissionService {
       private final PermissionRepository permissionRepository;
-      private final RoleRepository roleRepository;
 
-      public PermissionService(PermissionRepository permissionRepository, RoleRepository roleRepository) {
+      public PermissionService(PermissionRepository permissionRepository) {
             this.permissionRepository = permissionRepository;
-            this.roleRepository = roleRepository;
       }
 
       public boolean existsByModuleAndApiPathAndMethod(Permission p) {
-            return permissionRepository.existsByModuleAndApiPathAndMethod(p);
+            return permissionRepository.existsByModuleAndApiPathAndMethod(p.getModule(), p.getApiPath(), p.getMethod());
       }
 
       @Transactional
@@ -43,13 +40,24 @@ public class PermissionService {
       }
 
       @Transactional
-      public Permission updatePermission(Permission permission) {
+      public Permission updatePermission(Permission permission) throws InvalidException {
+
             Permission exPermission = fetchPermissionById(permission.getId());
             if (exPermission != null) {
+
+                  if (!permission.getApiPath().equals(exPermission.getApiPath())
+                              || !permission.getMethod().equals(exPermission.getMethod())
+                              || !permission.getModule().equals(exPermission.getModule())) {
+                        if (existsByModuleAndApiPathAndMethod(permission))
+                              throw new InvalidException("permission is exists");
+                  }
                   exPermission.setName(permission.getName());
                   exPermission.setApiPath(permission.getApiPath());
                   exPermission.setMethod(permission.getMethod());
                   exPermission.setModule(permission.getModule());
+
+            } else {
+                  throw new InvalidException("permission is not exists");
             }
             Permission newPermission = this.permissionRepository.save(exPermission);
             return newPermission;

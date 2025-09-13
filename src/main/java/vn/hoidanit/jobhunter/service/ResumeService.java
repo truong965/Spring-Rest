@@ -2,7 +2,6 @@ package vn.hoidanit.jobhunter.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,17 +17,13 @@ import com.turkraft.springfilter.parser.node.FilterNode;
 import jakarta.transaction.Transactional;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Resume;
-import vn.hoidanit.jobhunter.domain.Skill;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResponseCreateResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseGetResumeDTO;
-import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseUpdatedResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.mapper.ResumeMapper;
-import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.ResumeRepository;
-import vn.hoidanit.jobhunter.repository.UserRepository;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.util.error.InvalidException;
 

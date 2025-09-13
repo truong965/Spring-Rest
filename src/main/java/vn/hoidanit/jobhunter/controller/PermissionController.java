@@ -45,12 +45,6 @@ public class PermissionController {
       @ApiMessage("update permissions")
       public ResponseEntity<Permission> handleUpdatePermission(@Valid @RequestBody Permission permission)
                   throws InvalidException {
-            if (permissionService.fetchPermissionById(permission.getId()) == null) {
-                  throw new InvalidException("permission is not exists");
-            }
-            if (permissionService.existsByModuleAndApiPathAndMethod(permission)) {
-                  throw new InvalidException("permission is  exists");
-            }
             return ResponseEntity.ok(this.permissionService.updatePermission(permission));
       }
 

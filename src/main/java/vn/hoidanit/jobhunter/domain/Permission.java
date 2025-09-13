@@ -48,9 +48,16 @@ public class Permission {
       private String createdBy;
       private String updatedBy;
 
-      @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissons")
+      @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
       @JsonIgnore
       private List<Role> roles;
+
+      public Permission(String name, String apiPath, String method, String module) {
+            this.name = name;
+            this.apiPath = apiPath;
+            this.method = method;
+            this.module = module;
+      }
 
       @PrePersist
       public void handlePrePersist() {

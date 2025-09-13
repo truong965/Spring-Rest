@@ -9,7 +9,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -83,4 +82,14 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(res);
     }
 
+    @ExceptionHandler(value = {
+            PermissionException.class })
+
+    public ResponseEntity<RestResponse<Object>> handlePermisstionException(Exception ex) {
+        RestResponse<Object> rs = new RestResponse<Object>();
+        rs.setStatusCode(HttpStatus.FORBIDDEN.value());
+        rs.setError(ex.getMessage());
+        rs.setMessage("forbidden");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(rs);
+    }
 }
