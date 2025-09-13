@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -34,8 +35,9 @@ public class SkillService {
             Skill currentSkill = fetchSkillById(id);
             if (currentSkill != null) {
                   currentSkill.getJobs().forEach(j -> j.getSkills().remove(currentSkill));
+                   // delete subscriber_skill
+                  currentSkill.getSubscribers().forEach(s -> s.getSkills().remove(currentSkill));
             }
-
             this.skillRepository.deleteById(id);
       }
 
@@ -69,4 +71,7 @@ public class SkillService {
             return resultPaginationDTO;
       }
 
+      public List<Skill> fetchSkillsByIds(List<Long> ids) {
+            return this.skillRepository.findAllById(ids);
+      }
 }
