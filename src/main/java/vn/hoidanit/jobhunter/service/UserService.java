@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResponseCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
@@ -23,11 +24,14 @@ public class UserService {
       private final UserRepository userRepository;
       private final UserMapper userMapper;
       private final CompanyService companyService;
+      private final RoleService roleService;
 
-      public UserService(UserRepository userRepository, UserMapper userMapper, CompanyService companyService) {
+      public UserService(UserRepository userRepository, UserMapper userMapper, CompanyService companyService,
+                  RoleService roleService) {
             this.userRepository = userRepository;
             this.userMapper = userMapper;
             this.companyService = companyService;
+            this.roleService = roleService;
       }
 
       @Transactional
@@ -39,6 +43,10 @@ public class UserService {
             if (user.getCompany() != null) {
                   Company exCompany = this.companyService.fetchCompanyById(user.getCompany().getId());
                   user.setCompany(exCompany);
+            }
+            if (user.getRole() != null) {
+                  Role exRole = roleService.fetchRoleById(user.getRole().getId());
+                  user.setRole(exRole);
             }
             User newUser = userRepository.save(user);
             return userMapper.toResponseCreateUserDTO(newUser);
@@ -59,7 +67,7 @@ public class UserService {
       }
 
       public ResultPaginationDTO fetchAllUsers(Specification<User> specification, Pageable pageable) {
-            Page<User> userPage = userRepository.findAll(pageable);
+            Page<User> userPage = userRepository.findAll(specification, pageable);
             ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
 
             ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
@@ -89,6 +97,10 @@ public class UserService {
                   Company exCompany = this.companyService.fetchCompanyById(user.getCompany().getId());
                   existingUser.setCompany(exCompany);
             }
+            if (user.getRole() != null) {
+                  Role exRole = roleService.fetchRoleById(user.getRole().getId());
+                  existingUser.setRole(exRole);
+            }
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());
             existingUser.setAge(user.getAge());
@@ -113,5 +125,9 @@ public class UserService {
 
       public User getUserByEmailAndRefreshToken(String email, String token) {
             return userRepository.findByEmailAndRefreshToken(email, token);
+      }
+
+      public User findById(Long id) {
+            return this.userRepository.findById(id).orElse(null);
       }
 }

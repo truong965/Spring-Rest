@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.Company;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.turkraft.springfilter.boot.Filter;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1")
 public class CompanyController {
       private final CompanyService companyService;
@@ -32,12 +33,14 @@ public class CompanyController {
       }
 
       @PostMapping("/companies")
+      @ApiMessage("create company")
       public ResponseEntity<Company> handleCreateCompany(@Valid @RequestBody Company company) {
             Company newCompany = this.companyService.createCompany(company);
             return ResponseEntity.status(HttpStatus.CREATED).body(newCompany);
       }
 
       @PutMapping("/companies")
+      @ApiMessage("update company")
       public ResponseEntity<Company> handleUpdateCompany(@Valid @RequestBody Company company) {
             // TODO: process PUT request
 
@@ -45,6 +48,7 @@ public class CompanyController {
       }
 
       @DeleteMapping("/companies/{id}")
+      @ApiMessage("delete by id")
       public ResponseEntity<Void> handleDelteCompany(@PathVariable("id") Long id) {
             // TODO: process PUT request
             this.companyService.deleteCompany(id);
@@ -59,6 +63,7 @@ public class CompanyController {
       }
 
       @GetMapping("/companies/{id}")
+      @ApiMessage("fetch company by id")
       public ResponseEntity<Company> handleFetchCompanyById(@PathVariable("id") Long id) {
             return ResponseEntity.ok(companyService.fetchCompanyById(id));
       }

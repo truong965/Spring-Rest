@@ -63,11 +63,13 @@ public class AuthController {
             userLogin.setEmail(currentUserDB.getEmail());
             userLogin.setId(currentUserDB.getId());
             userLogin.setName(currentUserDB.getName());
+            userLogin.setRole(currentUserDB.getRole());
 
+            ResponeLoginDTO responeLoginDTO = new ResponeLoginDTO();
+            responeLoginDTO.setUser(userLogin);
             // create token
-            String accessToken = this.securityUtil.createAccessToken(authentication.getName(), userLogin);
-
-            ResponeLoginDTO responeLoginDTO = new ResponeLoginDTO(accessToken, userLogin);
+            String accessToken = this.securityUtil.createAccessToken(authentication.getName(), responeLoginDTO);
+            responeLoginDTO.setAccessToken(accessToken);
             // create refresh token
             String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), responeLoginDTO);
             // save refresh token
@@ -99,6 +101,7 @@ public class AuthController {
             userLogin.setEmail(currentUserDB.getEmail());
             userLogin.setId(currentUserDB.getId());
             userLogin.setName(currentUserDB.getName());
+            userLogin.setRole(currentUserDB.getRole());
 
             userGetAccount.setUser(userLogin);
             return ResponseEntity.ok().body(userGetAccount);
@@ -129,11 +132,12 @@ public class AuthController {
             userLogin.setEmail(currentUserDB.getEmail());
             userLogin.setId(currentUserDB.getId());
             userLogin.setName(currentUserDB.getName());
-
+            userLogin.setRole(currentUserDB.getRole());
+            ResponeLoginDTO responeLoginDTO = new ResponeLoginDTO();
+            responeLoginDTO.setUser(userLogin);
             // create token
-            String accessToken = this.securityUtil.createAccessToken(email, userLogin);
-
-            ResponeLoginDTO responeLoginDTO = new ResponeLoginDTO(accessToken, userLogin);
+            String accessToken = this.securityUtil.createAccessToken(email, responeLoginDTO);
+            responeLoginDTO.setAccessToken(accessToken);
             // create refresh token
             String newRefreshToken = this.securityUtil.createRefreshToken(email, responeLoginDTO);
             // save refresh token

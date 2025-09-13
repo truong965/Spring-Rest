@@ -10,11 +10,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Skill;
 import vn.hoidanit.jobhunter.domain.response.ResponseCreateJobDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.mapper.JobMapper;
+import vn.hoidanit.jobhunter.repository.CompanyRepository;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.SkillRepository;
 
@@ -22,12 +24,15 @@ import vn.hoidanit.jobhunter.repository.SkillRepository;
 public class JobService {
       private final JobRepository jobRepository;
       private final SkillRepository skillRepository;
+      private final CompanyRepository companyRepository;
       private final JobMapper jobMapper;
 
-      public JobService(JobRepository jobRepository, SkillRepository skillRepository, JobMapper jobMapper) {
+      public JobService(JobRepository jobRepository, SkillRepository skillRepository, JobMapper jobMapper,
+                  CompanyRepository companyRepository) {
             this.jobRepository = jobRepository;
             this.skillRepository = skillRepository;
             this.jobMapper = jobMapper;
+            this.companyRepository = companyRepository;
       }
 
       @Transactional
@@ -37,6 +42,12 @@ public class JobService {
                   List<Long> reqSkills = job.getSkills().stream().map(x -> x.getId()).collect(Collectors.toList());
                   List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
                   job.setSkills(dbSkills);
+            }
+            if (job.getCompany() != null) {
+                  Company company = this.companyRepository.findById(job.getCompany().getId()).orElse(null);
+                  if (company != null) {
+                        job.setCompany(company);
+                  }
             }
             Job newJob = this.jobRepository.save(job);
             return jobMapper.toResponseCreateJobDTO(newJob);
@@ -48,15 +59,17 @@ public class JobService {
       }
 
       @Transactional
-      public ResponseCreateJobDTO updateJob(Job job) {
-            Optional<Job> ec = this.jobRepository.findById(job.getId());
-            if (!ec.isPresent())
-                  return null;
-            Job existJob = ec.get();
+      public ResponseCreateJobDTO updateJob(Job job, Job jobInDB) {
             if (job.getSkills() != null) {
                   List<Long> reqSkills = job.getSkills().stream().map(x -> x.getId()).collect(Collectors.toList());
                   List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
-                  job.setSkills(dbSkills);
+                  jobInDB.setSkills(dbSkills);
+            }
+            if (job.getCompany() != null) {
+                  Company company = this.companyRepository.findById(job.getCompany().getId()).orElse(null);
+                  if (company != null) {
+                        jobInDB.setCompany(company);
+                  }
             }
             // private String name;
             // private String location;
@@ -69,19 +82,17 @@ public class JobService {
             // private boolean active;
             // private Company company;
             // private List<Skill> skills;
-            existJob.setName(job.getName());
-            existJob.setLocation(job.getLocation());
-            existJob.setSalary(job.getSalary());
-            existJob.setQuantity(job.getQuantity());
-            existJob.setLevel(job.getLevel());
-            existJob.setDescription(job.getDescription());
-            existJob.setStartDate(job.getStartDate());
-            existJob.setEndDate(job.getEndDate());
-            existJob.setActive(job.isActive());
-            existJob.setCompany(job.getCompany());
-            existJob.setSkills(job.getSkills());
+            jobInDB.setName(job.getName());
+            jobInDB.setLocation(job.getLocation());
+            jobInDB.setSalary(job.getSalary());
+            jobInDB.setQuantity(job.getQuantity());
+            jobInDB.setLevel(job.getLevel());
+            jobInDB.setDescription(job.getDescription());
+            jobInDB.setStartDate(job.getStartDate());
+            jobInDB.setEndDate(job.getEndDate());
+            jobInDB.setActive(job.isActive());
 
-            Job newJob = this.jobRepository.save(existJob);
+            Job newJob = this.jobRepository.save(jobInDB);
             return jobMapper.toResponseCreateJobDTO(newJob);
       }
 
@@ -91,7 +102,7 @@ public class JobService {
 
       public ResultPaginationDTO fetchAllJob(Specification<Job> specification, Pageable pageable) {
 
-            Page<Job> pageJob = this.jobRepository.findAll(pageable);
+            Page<Job> pageJob = this.jobRepository.findAll(specification, pageable);
             ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
 
             ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();

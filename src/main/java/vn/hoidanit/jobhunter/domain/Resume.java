@@ -1,60 +1,45 @@
 package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.hoidanit.jobhunter.domain.constant.LevelEnum;
+import vn.hoidanit.jobhunter.domain.constant.ResumeStatusEnum;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
-@Table(name = "jobs")
-public class Job {
+@Table(name = "resumes")
+public class Resume {
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
-      @Column(name = "job_id")
+      @Column(name = "resume_id")
       private long id;
-      private String name;
-      private String location;
-      private Double salary;
-      private Integer quantity;
+      @NotBlank(message = "email is not empty")
+      private String email;
+      @NotBlank(message = "url is not empty")
+      private String url;
 
       @Enumerated(EnumType.STRING)
-      private LevelEnum level;
-
-      @Column(columnDefinition = "MEDIUMTEXT")
-      private String description;
-
-      private Instant startDate;
-      private Instant endDate;
-      private boolean active;
+      private ResumeStatusEnum status;
 
       private Instant createdAt;
       private Instant updatedAt;
@@ -62,17 +47,12 @@ public class Job {
       private String updatedBy;
 
       @ManyToOne
-      @JoinColumn(name = "company_id")
-      private Company company;
+      @JoinColumn(name = "user_id")
+      private User user;
 
-      @ManyToMany(fetch = FetchType.LAZY)
-      @JsonIgnoreProperties(value = { "jobs" })
-      @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-      private List<Skill> skills;
-
-      @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
-      @JsonIgnore
-      List<Resume> resumes;
+      @ManyToOne
+      @JoinColumn(name = "job_id")
+      private Job job;
 
       @PrePersist
       public void handlePrePersist() {
@@ -89,4 +69,5 @@ public class Job {
                         ? SecurityUtil.getCurrentUserLogin().get()
                         : "";
       }
+
 }

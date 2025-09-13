@@ -49,7 +49,7 @@ public class CompanyService {
 
       public ResultPaginationDTO fetchAllCompany(Specification<Company> specification, Pageable pageable) {
 
-            Page<Company> pageCompany = this.companyRepository.findAll(pageable);
+            Page<Company> pageCompany = this.companyRepository.findAll(specification, pageable);
             ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
 
             ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();

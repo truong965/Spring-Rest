@@ -55,7 +55,7 @@ public class SkillService {
 
       public ResultPaginationDTO fetchAllSkill(Specification<Skill> specification, Pageable pageable) {
 
-            Page<Skill> pageSkill = this.skillRepository.findAll(pageable);
+            Page<Skill> pageSkill = this.skillRepository.findAll(specification, pageable);
             ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
 
             ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();

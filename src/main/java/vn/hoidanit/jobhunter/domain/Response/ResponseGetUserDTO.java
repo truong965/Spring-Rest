@@ -23,4 +23,5 @@ public class ResponseGetUserDTO {
       private String createdBy;
       private String updatedBy;
       private ResponseCompanyUser company;
+      private ResponseUserRole role;
 }

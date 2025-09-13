@@ -3,11 +3,13 @@ package vn.hoidanit.jobhunter.mapper;
 import org.mapstruct.Mapper;
 
 import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResponseCompanyUser;
 import vn.hoidanit.jobhunter.domain.response.ResponseCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseGetUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResponseUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResponseUserRole;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -30,5 +32,15 @@ public interface UserMapper {
             responseCompany.setId(company.getId());
             responseCompany.setName(company.getName());
             return responseCompany;
+      }
+
+      default ResponseUserRole roleToResponseUserRole(Role role) {
+            if (role == null) {
+                  return null;
+            }
+            ResponseUserRole rep = new ResponseUserRole();
+            rep.setId(role.getId());
+            rep.setName(role.getName());
+            return rep;
       }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
@@ -23,7 +24,7 @@ import vn.hoidanit.jobhunter.service.JobService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.InvalidException;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1")
 public class JobController {
       private final JobService jobService;
@@ -45,10 +46,10 @@ public class JobController {
             // TODO: process PUT request
             Job currentJob = this.jobService.fetchJobById(job.getId());
             if (currentJob == null) {
-                  throw new InvalidException("jon id =" + job.getId() + " is not exists");
+                  throw new InvalidException("job id =" + job.getId() + " is not exists");
             }
 
-            return ResponseEntity.ok(this.jobService.updateJob(job));
+            return ResponseEntity.ok(this.jobService.updateJob(job, currentJob));
       }
 
       @DeleteMapping("/jobs/{id}")

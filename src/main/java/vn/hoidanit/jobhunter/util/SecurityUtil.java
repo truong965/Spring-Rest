@@ -48,7 +48,12 @@ public class SecurityUtil {
       @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
       private long refreshTokenExpiration;
 
-      public String createAccessToken(String email, ResponeLoginDTO.UserLogin userLogin) {
+      public String createAccessToken(String email, ResponeLoginDTO rep) {
+            ResponeLoginDTO.UserInsideToken userToken = new ResponeLoginDTO.UserInsideToken();
+            userToken.setId(rep.getUser().getId());
+            userToken.setEmail(rep.getUser().getEmail());
+            userToken.setName(rep.getUser().getName());
+
             Instant now = Instant.now();
             Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
             List<String> listAuthority = new ArrayList<>();
@@ -60,14 +65,19 @@ public class SecurityUtil {
                   .issuedAt(now)
                   .expiresAt(validity)
                   .subject(email)
-                  .claim(AUTHORITIES_KEY, userLogin)
+                  .claim(AUTHORITIES_KEY, userToken)
                   .claim("premission", listAuthority)
                   .build();
             JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,claims)).getTokenValue();
       }
 
-         public String createRefreshToken(String email, ResponeLoginDTO responeLoginDTO) {
+         public String createRefreshToken(String email, ResponeLoginDTO rep) {
+                       ResponeLoginDTO.UserInsideToken userToken = new ResponeLoginDTO.UserInsideToken();
+            userToken.setId(rep.getUser().getId());
+            userToken.setEmail(rep.getUser().getEmail());
+            userToken.setName(rep.getUser().getName());
+
             Instant now = Instant.now();
             Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
 
@@ -76,7 +86,7 @@ public class SecurityUtil {
                   .issuedAt(now)
                   .expiresAt(validity)
                   .subject(email)
-                  .claim(AUTHORITIES_KEY, responeLoginDTO.getUser())
+                  .claim(AUTHORITIES_KEY,userToken)
                   .build();
             JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,claims)).getTokenValue();

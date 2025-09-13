@@ -4,29 +4,22 @@ import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.hoidanit.jobhunter.domain.constant.LevelEnum;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 @Getter
@@ -35,44 +28,29 @@ import vn.hoidanit.jobhunter.util.SecurityUtil;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "jobs")
-public class Job {
+@Table(name = "permissions")
+public class Permission {
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
-      @Column(name = "job_id")
+      @Column(name = "permission_id")
       private long id;
+      @NotBlank(message = "name is not empty")
       private String name;
-      private String location;
-      private Double salary;
-      private Integer quantity;
-
-      @Enumerated(EnumType.STRING)
-      private LevelEnum level;
-
-      @Column(columnDefinition = "MEDIUMTEXT")
-      private String description;
-
-      private Instant startDate;
-      private Instant endDate;
-      private boolean active;
+      @NotBlank(message = "apiPath is not empty")
+      private String apiPath;
+      @NotBlank(message = "method is not empty")
+      private String method;
+      @NotBlank(message = "module is not empty")
+      private String module;
 
       private Instant createdAt;
       private Instant updatedAt;
       private String createdBy;
       private String updatedBy;
 
-      @ManyToOne
-      @JoinColumn(name = "company_id")
-      private Company company;
-
-      @ManyToMany(fetch = FetchType.LAZY)
-      @JsonIgnoreProperties(value = { "jobs" })
-      @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-      private List<Skill> skills;
-
-      @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+      @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissons")
       @JsonIgnore
-      List<Resume> resumes;
+      private List<Role> roles;
 
       @PrePersist
       public void handlePrePersist() {
