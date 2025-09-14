@@ -30,8 +30,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleInvalidException(Exception ex) {
         RestResponse<Object> rs = new RestResponse<Object>();
         rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        rs.setError(ex.getMessage());
-        rs.setMessage("exception occurs ");
+        rs.setMessage(ex.getMessage());
+        rs.setError("exception occurs ");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
     }
 
@@ -41,8 +41,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleNotFoundException(Exception ex) {
         RestResponse<Object> rs = new RestResponse<Object>();
         rs.setStatusCode(HttpStatus.NOT_FOUND.value());
-        rs.setError(ex.getMessage());
-        rs.setMessage("404 NOT FOUND !!! url may not exists");
+        rs.setMessage(ex.getMessage());
+        rs.setError("404 NOT FOUND !!! url may not exists");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
     }
 
@@ -68,8 +68,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
         RestResponse<Object> rs = new RestResponse<Object>();
         rs.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        rs.setError(ex.getMessage());
-        rs.setMessage("exception upload file occurs ");
+        rs.setMessage(ex.getMessage());
+        rs.setError("exception upload file occurs ");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rs);
     }
 
@@ -77,8 +77,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleMaxSizeException(MaxUploadSizeExceededException ex) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.PAYLOAD_TOO_LARGE.value());
-        res.setError(ex.getMessage());
-        res.setMessage("File size exceeds the configured limit.");
+        res.setMessage(ex.getMessage());
+        res.setError("File size exceeds the configured limit.");
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(res);
     }
 
@@ -88,8 +88,17 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handlePermisstionException(Exception ex) {
         RestResponse<Object> rs = new RestResponse<Object>();
         rs.setStatusCode(HttpStatus.FORBIDDEN.value());
-        rs.setError(ex.getMessage());
-        rs.setMessage("forbidden");
+        rs.setMessage(ex.getMessage());
+        rs.setError("forbidden");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(rs);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<RestResponse<Object>> handleAllException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        res.setMessage(ex.getMessage());
+        res.setError("Internal Server Error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
     }
 }

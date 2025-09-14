@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+</head>
+
+<body>
+      <div style="color:red;">hello world</div>
+      <h1> Hi, <span th:text="${name}"></span> </h1>
+      <h2> Job recommendations</h2>
+      <div th:each="job : ${jobs}">
+            <p>
+                  <span th:text="${job.name}"></span> |
+                  <span th:text="${job.company?.name}"></span> |
+                  <span th:text="${job.location}"></span> |
+                  <span th:text="${#numbers.formatDecimal(job.salary, 0,'COMMA',0, 'POINT')}"></span>
+            </p>
+            <div> skill required </div>
+            <ul>
+                  <li th:each="skill : ${job.skills}" th:text="${skill.name}"></li>
+            </ul>
+            <hr>
+      </div>
+
+</body>
+
+</html>

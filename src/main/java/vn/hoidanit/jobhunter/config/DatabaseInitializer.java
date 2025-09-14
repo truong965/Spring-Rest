@@ -91,8 +91,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
                   // file
                   arr.add(new Permission("download a file", "/api/v1/files", "POST", "FILES"));
-                  arr.add(new Permission("upload a file", "/api/v1/files", "GET", "FILES"));
 
+                  // email
+                  arr.add(new Permission("send email", "/api/v1/email", "GET", "EMAILS"));
                   this.permissionRepository.saveAll(arr);
             }
             if (countRoles == 0) {
