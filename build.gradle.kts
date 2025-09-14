@@ -39,6 +39,8 @@ dependencies {
 	implementation("org.apache.tika:tika-core:3.2.2")
 // https://mvnrepository.com/artifact/commons-io/commons-io
 	implementation("commons-io:commons-io:2.20.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+
 }
 
 tasks.withType<Test> {

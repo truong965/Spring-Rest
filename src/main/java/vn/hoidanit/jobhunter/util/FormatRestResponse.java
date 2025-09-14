@@ -28,7 +28,11 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
                   Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
             HttpServletResponse res = ((ServletServerHttpResponse) response).getServletResponse();
             int status = res.getStatus();
-            if (body instanceof String || body instanceof Resource) {
+            if (!MediaType.APPLICATION_JSON.equals(selectedContentType)) {
+                  return body;
+            }
+            String path = request.getURI().getPath();
+            if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
                   return body;
             }
             // case error
